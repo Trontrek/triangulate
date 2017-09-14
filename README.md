@@ -3,11 +3,15 @@
 
 In this assignment, you will implement the triangulation algorithm described in Chapter 3 of the CGAA book. Here is a more detailed list of your tasks.
 
-## Due: September 28, 2017 by 11:59pm.
+## Due:
 
-## How to submit: Submit all source code (no binary) in a file to GMU Blackboard named
+September 28, 2017 by 11:59pm.
 
-               cs633_pa1_[your last name].zip 
+## How to submit:
+
+Submit all source code (no binary) in a file to GMU Blackboard named
+
+               cs633_pa1_[your last name].zip
 
 ### Not TO DO:
 
