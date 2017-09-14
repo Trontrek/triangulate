@@ -1,5 +1,8 @@
 
 # CS 633 Triangulation Assignment
+
+In this assignment, you will implement the triangulation algorithm described in Chapter 3 of the CGAA book. Here is a more detailed list of your tasks.
+
 ## Due: September 28, 2017 by 11:59pm.
 
 ## How to submit: Submit all source code (no binary) in a file to GMU Blackboard named
@@ -9,13 +12,11 @@
 ### Not TO DO:
 
 You Cannot
-1. use external code
-2. Change the provided code (unless there is a bug)
+1. use external code, or
+2. change the provided code (unless there is a bug)
 
 ### TO DO:
 
-In this assignment, you will implement the triangulation algorithm described
-in Chapter 3 of the CGAA book. Here is a more detailed list of your tasks
 
 1. Make sure that you understand the algorithm and the skeleton code, esp.
     classes in polygon.h
