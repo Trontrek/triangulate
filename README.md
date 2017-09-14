@@ -17,13 +17,13 @@ Submit all source code (no binary) in a file to GMU Blackboard named
 
 You Cannot
 1. use external code, or
-2. change the provided code (unless there is a bug)
+2. change the provided code (unless there is a bug), or
+3. take your friends' code (this is an individual assignment)
 
 ## TO DO:
 
 
-1. Make sure that you understand the algorithm and the skeleton code, esp.
-    classes in polygon.h
+1. Make sure that you understand the algorithm and the skeleton code, esp. classes in polygon.h
 
 2. Implement the triangulate function in triangulation.cpp
 
