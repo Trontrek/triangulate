@@ -2,17 +2,17 @@
 # CS 633 Triangulation Assignment
 ## Due: September 28, 2017 by 11:59pm.
 
-## How to submit: Submit all source code (no binary) in a file named
+## How to submit: Submit all source code (no binary) in a file to GMU Blackboard named
 
-               cs633_pa1_[your last name].zip to Blackboard
+               cs633_pa1_[your last name].zip 
 
-### Not TODO:
+### Not TO DO:
 
 You Cannot
 1. use external code
 2. Change the provided code (unless there is a bug)
 
-### TODO:
+### TO DO:
 
 In this assignment, you will implement the triangulation algorithm described
 in Chapter 3 of the CGAA book. Here is a more detailed list of your tasks
