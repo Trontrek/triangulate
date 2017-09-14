@@ -13,13 +13,13 @@ Submit all source code (no binary) in a file to GMU Blackboard named
 
                cs633_pa1_[your last name].zip
 
-### Not TO DO:
+## Not TO DO:
 
 You Cannot
 1. use external code, or
 2. change the provided code (unless there is a bug)
 
-### TO DO:
+## TO DO:
 
 
 1. Make sure that you understand the algorithm and the skeleton code, esp.
