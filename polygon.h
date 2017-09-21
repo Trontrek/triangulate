@@ -1,7 +1,8 @@
 //------------------------------------------------------------------------------
-//  Copyright 2010-2012 by Jyh-Ming Lien and George Mason University
+//  Copyright 2010-2017 by Jyh-Ming Lien and George Mason University
 //  See the file "LICENSE" for more information
 //------------------------------------------------------------------------------
+#pragma once
 #ifndef _POLYGON_H_
 #define _POLYGON_H_
 
@@ -277,7 +278,7 @@ public:
 	//access
 	void buildBoxAndCenter();
 	const double * getBBox() const { assert(is_buildboxandcenter_called); return box; }
-	const Point2d& getCenter() { assert(is_buildboxandcenter_called); return center; }
+	const Point2d& getCenter() const { assert(is_buildboxandcenter_called); return center; }
 
 protected:
 
