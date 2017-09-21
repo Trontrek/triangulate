@@ -1,6 +1,6 @@
 
 //------------------------------------------------------------------------------
-//  Copyright 2007-201˙ by Jyh-Ming Lien and George Mason University
+//  Copyright 2007-2017 by Jyh-Ming Lien and George Mason University
 //  See the file "LICENSE" for more information
 //------------------------------------------------------------------------------
 
@@ -8,10 +8,37 @@
 #include "polygon.h"
 #include "intersection.h"
 
+string VertexTypeName[] = {"START", "END", "SPLIT", "MERGE", "REGULAR_DOWN", "REGULAR_UP", "UNKNOWN" };
 
 ply_vertex::~ply_vertex()
 {
 	//doing nothing for now
+}
+
+bool ply_vertex::operator==(const ply_vertex& v2)
+{
+	return this->getVID() == v2.getVID() && this->getPos() == v2.getPos();
+}
+
+bool ply_vertex::operator>(const ply_vertex& v2)
+{
+	Point2d p1 = this->getPos();
+	Point2d p2 = v2.getPos();
+
+	return ((p1[1] > p2[1]) || ((p1[1] == p2[1]) && (p1[0] < p2[0])));
+}
+
+bool ply_vertex::operator<(const ply_vertex& v2)
+{
+	Point2d p1 = this->getPos();
+	Point2d p2 = v2.getPos();
+
+	return ((p1[1] < p2[1]) || ((p1[1] == p2[1]) && (p1[0] > p2[0])));
+}
+
+bool ply_vertex::operator!=(const ply_vertex& v2)
+{
+	return !(*this == v2);
 }
 
 // - compute normal
@@ -79,6 +106,56 @@ void ply_vertex::rotate(double r)
 	normal.set(x,y);
 }
 
+ply_vertex::VertexType ply_vertex::getType()
+{
+	if(this->type != ply_vertex::UNKNOWN) return this->type;
+
+	ply_vertex * prev_vertex = this->getPre();
+	ply_vertex * next_vertex = this->getNext();
+
+	if(*this > *next_vertex && *prev_vertex > *this)
+		this->type = ply_vertex::REGULAR_DOWN;
+	else if(*this > *prev_vertex && *next_vertex > *this)
+		this->type = ply_vertex::REGULAR_UP;
+	else if(*prev_vertex > *this && *next_vertex > *this)
+	{
+		if(this->isReflex())
+			this->type  = ply_vertex::MERGE;
+		else
+			this->type = ply_vertex::END;
+
+	}
+	else if(*this > *prev_vertex && *this > *next_vertex)
+	{
+		if(this->isReflex())
+			this->type = ply_vertex::SPLIT;
+		else
+			this->type = ply_vertex::START;
+	}
+	else
+	{
+		this->type = ply_vertex::UNKNOWN;
+	}
+
+	return this->type;
+}
+
+bool ply_vertex::isGoUp()
+{
+	ply_vertex* next = this->getNext();
+	return this->getPos()[1] > next->getPos()[1];
+}
+
+bool ply_vertex::isGoDown()
+{
+	ply_vertex* next = this->getNext();
+	return this->getPos()[1] <= next->getPos()[1];
+}
+
+string ply_vertex::getTypeName()
+{
+	return VertexTypeName[this->type];
+}
 
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -130,8 +207,8 @@ void c_ply::beginPoly()
 	all.clear();
 }
 
-// Add a vertex to the polygonal chian
-void c_ply::addVertex( double x, double y, bool remove_duplicate )
+// Add a vertex to the polygonal chain
+void c_ply::addVertex( double x, double y, int vid, bool remove_duplicate )
 {
 	Point2d pt(x,y);
 
@@ -145,7 +222,10 @@ void c_ply::addVertex( double x, double y, bool remove_duplicate )
 	}
 	tail=v;
 	if( head==NULL ) head=tail;
-	v->setVID(all.size()); //id of the vertex in this ply
+	if(vid == -1)
+		v->setVID(all.size()); //id of the vertex in this ply
+	else
+		v->setVID(vid);
 	all.push_back(v);
 
 }
@@ -474,10 +554,17 @@ void c_polygon::build_all()
 	for(iterator i=begin();i!=end();i++){
 		uint vsize=i->getSize();
 		for(uint j=0;j<vsize;j++){
-			(*i)[j]->setVID(vid++);       //id of vertex in the polygons
+			if((*i)[j]->getVID() == UINT_MAX) //XXX this implementation has some issues
+				(*i)[j]->setVID(vid++);       //id of vertex in the polygons
+			this->vid_index_map[(*i)[j]->getVID()] = all.size();
 			all.push_back((*i)[j]);
 		}
 	}//end for i
+}
+
+ply_vertex* c_polygon::getVertexByVID(uint vid)
+{
+	return all[this->vid_index_map[vid]];
 }
 
 double c_polygon::getArea()

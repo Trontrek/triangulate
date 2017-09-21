@@ -57,8 +57,9 @@ int main(int argc, char ** argv)
 	fin.close();
 
 	//triangulate the polygon
-	vector<triangle> triangles;
-	triangulate(poly,triangles);
+	Triangulator trizor;
+  vector<triangle> triangles;
+  trizor.triangulate(poly,triangles);
 
 	//output information about the triangles
 	cout<<"- There are "<<triangles.size()<<" triangles from a polygon with "
