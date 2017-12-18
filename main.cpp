@@ -5,15 +5,13 @@
 
 #include <iostream>
 #include <fstream>
+#include <unistd.h>
 using namespace std;
 
 #include "polygon.h"
 #include "triangulation.h"
 #include "simple_svg_1.0.0.h"
 
-//
-// NEW: for SVG file rendering
-//
 void draw_SVG_ply(svg::Document & doc, const c_polygon& polygon);
 void draw_SVG_triangles(svg::Document & doc, c_polygon& poly, const vector<triangle>& triangles);
 
@@ -23,25 +21,37 @@ void draw_SVG_triangles(svg::Document & doc, c_polygon& poly, const vector<trian
 int main(int argc, char ** argv)
 {
 	if(argc<2){
-		cerr<<"Usage: "<<argv[0]<<" [-s scale] *.poly"<<endl;
+		cerr<<"Usage: "<<argv[0]<<"[-m method] [-s scale] *.poly"<<endl;
 		return 1;
 	}
 
-	float scale=1;
+	float scale = 1;
 	std::string poly_filename;
+	int method = 0;
 
-	for(int i=1;i<argc;i++)
-	{
-		if(std::string(argv[i])=="-s")
-		{
+	for(int i=1;i<argc;i++){
+		if(std::string(argv[i])=="-s"){
 			scale=atof(argv[++i]);
 			if(scale<0) scale=1;
 		}
+		else if(std::string(argv[i])=="-m"){
+			++i;
+			if(std::string(argv[i])=="monotone")
+				method = 0;
+			else if(std::string(argv[i])=="earclip_fan")
+				method = 1;
+			else if(std::string(argv[i])=="earclip_onion")
+				method = 2;
+			else if(std::string(argv[i])=="optimal")
+				method = 3;
+			else{
+				cerr << "You have 4 choices of methods to choose from:\nmonotone, earclip_fan, earclip_onion, and optimal\n";
+				return 1;
+			}
+		}
 		else
-		{
 			poly_filename=argv[i];
-		}//end if
-	}//end for i
+	}
 
 	//open file
 	ifstream fin(poly_filename.c_str());
@@ -58,26 +68,36 @@ int main(int argc, char ** argv)
 
 	//triangulate the polygon
 	Triangulator trizor;
-  vector<triangle> triangles;
-  trizor.triangulate(poly,triangles);
+  	vector<triangle> triangles;	
+  	trizor.triangulate(poly,triangles,method);
 
 	//output information about the triangles
 	cout<<"- There are "<<triangles.size()<<" triangles from a polygon with "
-	    <<poly.getSize()<<" vertices and "<<poly.size()
+	    << poly.getSize()<<" vertices and "<<poly.size()
 	    <<((poly.size()==1)?" boundary":" boundaries")<<endl;
 
-	for( auto & tri : triangles)
-	{
+	/*for( auto & tri : triangles){
 		cout<<"\ttriangle: ";
 		for(short j=0;j<3;j++) cout<<tri.v[j]<<" ";
 		cout<<"\n";
 	}
-	cout<<flush;
+	cout<<flush;*/
+	
+	poly_filename.erase(0,12);
+	poly_filename.erase(poly_filename.size()-5);
+	
+	string filename;
+	if(method == 0)
+		filename = "monotone_";
+	else if(method == 1)
+		filename = "earclip_fan_";
+	else if(method == 2)
+		filename = "earclip_onion_";
+	else if(method == 3)
+		filename = "optimal_";
+	filename += poly_filename + ".svg";
 
-	//
-	// NEW: render output to SVG file
-	//
-	string SVGfilename("output.svg");
+	string SVGfilename(filename);
 
 	poly.buildBoxAndCenter();
 	const double * bbox = poly.getBBox();
@@ -100,10 +120,6 @@ int main(int argc, char ** argv)
 
 	return 0;
 }
-
-//
-// NEW: for SVG file rendering
-//
 
 void draw_SVG_ply(svg::Polygon & poly, const c_ply& ply)
 {
@@ -147,10 +163,18 @@ void draw_SVG_triangles(svg::Document & doc, c_polygon& poly, const vector<trian
 	const double * bbox = poly.getBBox();
 	float thickness=std::min(bbox[1]-bbox[0],bbox[3]-bbox[2])*0.0025f;
 
+	//int j = 0;
 	for( auto & tri : triangles)
 	{
-		svg::Polygon svgpoly(svg::Fill(svg::Color::Lime), svg::Stroke(thickness, svg::Color::Green));
-
+		svg::Polygon svgpoly(svg::Fill(svg::Color::Sky), svg::Stroke(thickness, svg::Color::Blue));
+		//svg::Polygon svgpoly(svg::Fill(svg::Color::Lime), svg::Stroke(thickness, svg::Color::Green));
+		/*if(j == 1){
+			--j; --j;
+			svg::Polygon svgpoly2(svg::Fill(svg::Color::Sky), svg::Stroke(thickness, svg::Color::Blue));
+			svgpoly = svgpoly2;
+		}
+		++j;*/
+		
 		for(short i=0;i<3; i++)
 		{
 			const Point2d& p=poly[tri.v[i]]->getPos();

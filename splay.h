@@ -419,7 +419,7 @@ void SplayTree<T, KeyType>::splay( KeyType keys, BTreeNode<T, KeyType> * & t ) c
             {
                if(t->_left == NULL) break;
                if( keys < t->_left->keyValue() ) rotateWithLeftChild( t );
-                if( t->_left == NULL ) break;
+               if( t->_left == NULL ) break;
                
                // Link Right
                _rightTreeMin->_left = t;

@@ -42,12 +42,26 @@ public:
 	//
 	//given a polygon, compute a list of triangles that partition the polygon
 	//
-	void triangulate(c_polygon& poly, vector<triangle>& triangles );
+	void triangulate(c_polygon& poly, vector<triangle>& triangles, int method);
 
 	vector<ply_edge>* getDiagonals() { return &m_diagonals; }
 
 protected:
 
+	// ear clipping algorithm
+	void earClipping(c_polygon& poly, vector<triangle>& triangles, int method);
+	
+	void findMinTriangle(c_polygon& poly, vector<triangle>& triangles);
+	
+	// optimal algorithm
+	void optimal(vector<triangle>& triangles);
+	
+	// brute force algorithm
+	void bruteForce(vector<triangle>& triangles);
+	
+	// brute force algorithm
+	void bruteForce(c_polygon& poly, vector<triangle>& triangles);
+	
 	//
 	//given a polygon, split it into monotonic polygons
 	//
@@ -76,6 +90,18 @@ protected:
 	// handle regular up vertex event
 	void handleRegularUpVertex(ply_vertex* vertex);
 	
+	// ADDED METHOD
+	// Steps to insert ei
+	void insertEI(ply_vertex* vertex);
+	
+	// ADDED METHOD
+	// Steps to delete ei-1
+	void deletePreEI(ply_vertex* vertex);
+	
+	// ADDED METHOD
+	// Steps to update ej
+	void updateEJ(ply_vertex* vertex);
+	
 private:
 
 	// add triangle into triangles with vids of three vertices
@@ -98,10 +124,11 @@ private:
 	c_polygon findSubPolygonByDiagonal(c_polygon& orginal, uint source_vid, uint target_vid, bool CCW=true);
 
 	PQueue m_pqueue;
+	PQueue h_pqueue;
 	EdgeBST m_bst;
 	EdgeMap m_edges;
 	vector<ply_edge> m_diagonals;
 	c_polygon m_ploy;
 	vector<c_polygon> m_polys;
-
+	int numTri;
 };

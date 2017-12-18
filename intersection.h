@@ -24,6 +24,14 @@ template<class real> real Area(const real a[2], const real b[2], const real c[2]
 		   ( c[0] - a[0] ) * ( b[1] - a[1] );
 }
 
+// ADDED
+template<class real> float TriangleArea(const real a[2], const real b[2], const real c[2])
+{
+	return abs(( a[0] * ( b[1] - c[1] )
+	           + b[0] * ( c[1] - a[1] ) 
+			   + c[0] * ( a[1] - b[1] )) / 2.0 );
+}
+
 template<class real> int AreaSign(const real a[2], const real b[2], const real c[2])
 {
 	real area=Area(a,b,c);
@@ -147,7 +155,6 @@ template<class real> bool Union
 /*---------------------------------------------------------------------
 SegSegInt: Detect intersection between two closed segments ab and cd.
 ---------------------------------------------------------------------*/
-
 
 template<class real> bool SegSegInt( const real a[2], const real b[2],
 					   const real c[2], const real d[2])

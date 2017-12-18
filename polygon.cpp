@@ -252,7 +252,7 @@ void c_ply::endPoly(bool remove_duplicate)
 				all.pop_back();
 				tail=all.back();
 			}
-		}//
+		}
 	}
 
 	tail->setNext(head);

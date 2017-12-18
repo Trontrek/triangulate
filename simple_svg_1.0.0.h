@@ -178,7 +178,7 @@ namespace svg
     class Color : public Serializeable
     {
     public:
-        enum Defaults { Transparent = -1, Aqua, Black, Blue, Brown, Cyan, Fuchsia,
+        enum Defaults { Transparent = -1, Aqua, Black, DarkBlue, Blue, Sky, Brown, Cyan, Fuchsia,
             Green, Lime, Magenta, Orange, Purple, Red, Silver, White, Yellow };
 
         Color(int r, int g, int b) : transparent(false), red(r), green(g), blue(b) { }
@@ -189,7 +189,9 @@ namespace svg
             {
                 case Aqua: assign(0, 255, 255); break;
                 case Black: assign(0, 0, 0); break;
+                case DarkBlue: assign(0, 0, 128); break;
                 case Blue: assign(0, 0, 255); break;
+                case Sky: assign(100, 180, 255); break;
                 case Brown: assign(165, 42, 42); break;
                 case Cyan: assign(0, 255, 255); break;
                 case Fuchsia: assign(255, 0, 255); break;

@@ -137,6 +137,16 @@ public:
 		else
 			this->m_keyValue = (keyValue - y0)*(x1 - x0) / (y1 - y0) + x0;
 	}
+	
+	// ADDED
+	double distance(){
+		double x0 = m_source->getPos()[0];
+		double x1 = m_traget->getPos()[0];
+		double y0 = m_source->getPos()[1];
+		double y1 = m_traget->getPos()[1];
+		return sqrt((x0 - x1)*(x0 - x1) +
+					(y0 - y1)*(y0 - y1));
+	}
 
 	bool operator==( const ply_edge& other ){
 		return ((m_source->getVID() == other.m_source->getVID()) && (m_traget->getVID() == other.m_source->getVID()));
@@ -193,6 +203,19 @@ public:
 	// Access
 	ply_vertex * getHead() const { return head; }
 	POLYTYPE getType() const { return type; }
+	
+	// ADDED
+	void setHead(ply_vertex * h){
+		head=h; 
+		if(h!=NULL){ tail=h->getPre(); } 
+		else{ tail=NULL; }
+	}
+	
+	// ADDED
+	void setType(POLYTYPE t){
+		type=t;
+	}
+	
 	void set(POLYTYPE t,ply_vertex * h){
 		type=t; head=h;
 		if(h!=NULL){ tail=h->getPre(); }
@@ -201,6 +224,19 @@ public:
 	int getSize() {
 		if(all.empty()) build_all();
 		return all.size();
+	}
+	
+	int getChainSize()
+	{
+		int count = 0;
+		if(head!=NULL){
+			ply_vertex* ptr = head;
+			do{
+				++count;
+				ptr = ptr->getNext();
+			} while(ptr!= head);
+		}
+		return count;	
 	}
 
 	ply_vertex * operator[](unsigned int id){
