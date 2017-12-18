@@ -30,6 +30,3 @@ There are four options:
 ## Input File Format:
 
 The format of the poly file can be found in PLY_FORMAT.txt
-
-If you are interested in getting more polygons, here is a link
-http://masc.cs.gmu.edu/wiki/uploads/Dude2D/polydata.zip
